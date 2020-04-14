@@ -2,21 +2,10 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 
-export default HomeScreen = ({ navigation }) => {
+export default HomeScreen = (props) => {
     return (
         <View>
-            <TouchableNativeFeedback
-                onPress={() => {
-                    navigation.navigate("ThirdScreen");
-                }}
-                background={TouchableNativeFeedback.Ripple("#000")}
-            >
-                <View style={{ padding: 10, elevation: 2, backgroundColor: 'white' }}>
-                    <Text style={{ fontSize: 40 }}>
-                        Click Me
-                    </Text>
-                </View>
-            </TouchableNativeFeedback>
+            <Text style={{ fontSize: 40 }}> Data is {props.route.params.valueKey + ""}</Text>
         </View>
     );
 }
