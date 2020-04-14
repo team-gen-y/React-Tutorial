@@ -1,36 +1,43 @@
 import React, { useState } from 'react';
-import { View, Text, Dimensions } from 'react-native';
-import { TouchableOpacity, TextInput } from 'react-native-gesture-handler';
+import { View, Text, TextInput, Dimensions } from 'react-native';
+import Store from './Store';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Observer } from 'mobx-react';
 
 export default LoginScreen = (props) => {
 
-    // const [stateName, setStateFuncName] = useState("default");
-    const [text, setText] = useState(0);
+    const [data, setData] = useState(0);
 
     return (
         <View>
             <TextInput
-                value={text + ""}
+                value={data + ""}
                 onChangeText={res => {
-                    console.log(res);
-                    setText(res)
+                    Store.data = res
+                    setData(res);
                 }}
                 style={{
                     fontSize: 40, backgroundColor: 'white',
                     borderBottomColor: "black", width: Dimensions.get("window").width, borderWidth: 1
                 }} />
 
+            <Text style={{ fontSize: 40 }}>
+                {Store.data}
+            </Text>
+
             <TouchableOpacity
                 onPress={() => {
-                    props.navigation.navigate("HomeScreen", { valueKey: text });
+                    props.navigation.navigate("HomeScreen");
                 }}
             >
-                <Text style={{ fontSize: 40 }}>
-                    Click Me
-                </Text>
+                <Observer>
+                    {
+                        () => (
+                            <Text style={{ fontSize: 40 }}>{Store.name}</Text>
+                        )
+                    }
+                </Observer>
             </TouchableOpacity>
-
-
         </View>
     );
 }
