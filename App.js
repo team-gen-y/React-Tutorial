@@ -5,15 +5,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/LoginScreen';
 import HomeScreen from './src/HomeScreen';
 
-const StackNavigator = createStackNavigator();
 
 export default App = () => {
+  const StackNavigator = createStackNavigator();
+
   return (
     <NavigationContainer>
       <StackNavigator.Navigator>
-        <StackNavigator.Screen component={LoginScreen} name="LoginScreen" />
-        <StackNavigator.Screen component={HomeScreen} name="HomeScreen" />
-        <StackNavigator.Screen component={LoginScreen} name="ThirdScreen" />
+        <StackNavigator.Screen component={LoginScreen} name="HomeScreen" />
       </StackNavigator.Navigator>
     </NavigationContainer>
   );

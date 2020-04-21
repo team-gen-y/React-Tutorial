@@ -1,75 +1,46 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Dimensions, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Dimensions, Image, ActivityIndicator, Linking } from 'react-native';
 import Store from './Store';
 import { TouchableOpacity, FlatList, TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { Observer } from 'mobx-react';
+import Axios from 'axios';
+import { fontCustomSize } from './common/font';
 
 export default LoginScreen = (props) => {
 
-    const [listData, setListData] = useState([
-        {
-            id: "1",
-            name: "Saurabh",
-            domain: "Android",
-            image: "https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg-1024x683.jpg"
-        },
-        {
-            id: "2",
-            name: "Atif",
-            domain: "Web",
-            image: "https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg-1024x683.jpg"
-        },
-        {
-            id: "3",
-            name: "Shwet",
-            domain: "UI/UX",
-            image: "https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg-1024x683.jpg"
-        },
-        {
-            id: "4",
-            name: "Subhashree",
-            domain: "ML",
-            image: "https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg-1024x683.jpg"
-        }
-    ])
+    const [listData, setListData] = useState()
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        Axios.get("https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=2719918152a7463492d900316ee90bf1").then(res => {
+            var temp = [];
+            res.data.articles.forEach((eachArt, index) => {
+                temp.push(eachArt);
+            })
+            setLoading(false);;
+            setListData(temp);
+        })
+    }, [])
 
     return (
         <View style={{ backgroundColor: 'white', flex: 1 }}>
-            <FlatList
+            {loading ? <ActivityIndicator size={"large"} color="#450" style={{ alignSelf: 'center', height: Dimensions.get("window").height / 2 }} /> : (<FlatList
                 data={listData}
-                renderItem={({ item }) => (<TouchableNativeFeedback
-                    background={TouchableNativeFeedback.Ripple("#000")}
+                renderItem={({ item }) => (<TouchableOpacity
+                    onPress={() => {
+                        Linking.openURL(item.url)
+                    }}
                 >
-                    <View style={{ padding: 10, flexDirection: 'row', backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: '#d4d4d4' }}>
-                        <Image source={{ uri: item.image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
-                        <View style={{ flexDirection: 'column', justifyContent: 'center', marginLeft: 10 }}>
-                            <Text style={{ fontSize: 30 }}>{item.name}</Text>
-                            <Text style={{ fontSize: 20 }}>{item.domain}</Text>
-                        </View>
+                    <View style={{ padding: 10, elevation: 3, margin: 10, backgroundColor: 'white' }}>
+                        <Text style={{ fontFamily: "Bold", marginBottom: fontCustomSize(5) }}>{item.author}</Text>
+                        {item.urlToImage == "" ? null : item.urlToImage == null ? null : <Image source={{ uri: item.urlToImage }} style={{ height: 150 }} />}
+                        <Text style={{ fontFamily: "Bold", fontSize: fontCustomSize(12), marginTop: fontCustomSize(10) }}>{item.title}</Text>
+                        <Text style={{ fontFamily: 'Medium', marginTop: fontCustomSize(10) }}>{item.description}</Text>
                     </View>
-                </TouchableNativeFeedback>)}
-                keyExtractor={(item) => (item.id)}
-            />
-            <TouchableOpacity
-                onPress={() => {
-                    var temp = listData;
-                    var temp = [
-                        ...temp,
-                        {
-                            id: temp.length + 1 + "",
-                            name: "XYZ",
-                            domain: "ABC",
-                            image: "https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg-1024x683.jpg"
-                        }
-                    ]
-
-                    setListData(temp);
-                }}
-                style={{ height: 50 }}>
-                <Text>
-                    Add Item
-                    </Text>
-            </TouchableOpacity>
+                </TouchableOpacity>)
+                }
+                keyExtractor={(item) => (item.title)}
+            />)}
         </View>
     );
 }
