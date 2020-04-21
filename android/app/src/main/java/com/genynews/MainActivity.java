@@ -1,4 +1,4 @@
-package com.tutorials;
+package com.genynews;
 
 import com.facebook.react.ReactActivity;
 
